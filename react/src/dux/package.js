@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
 
-import Tessellation from "./Tessellation";
+import FileSystem from "./FileSystem";
 
 export default {
-    Tessellation,
+    FileSystem,
 
     RootReducer: combineReducers({
-        Tessellation: Tessellation.reducer1
+        FileSystem: FileSystem.Reducer
     })
 };
