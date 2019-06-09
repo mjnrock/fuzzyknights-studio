@@ -10,6 +10,13 @@ function LoadFile(data) {
     };
 }
 function UpdateAttribute(attr, value) {
+    if(Array.isArray(attr)) {
+        return {
+            type: EnumFileSystem.UPDATE_ATTRIBUTE,
+            data: attr
+        };
+    }
+
     return {
         type: EnumFileSystem.UPDATE_ATTRIBUTE,
         data: {
@@ -30,12 +37,21 @@ function Reducer(state = {}, action) {
             state["Attributes"] = {};
         }
 
-        state.Attributes[ action.data.key ] = action.data.value;
+        if(Array.isArray(action.data)) {
+            action.data.forEach(e => {
+                state.Attributes[ e[0] ] = e[1];
+            });
+        } else {
+            state.Attributes[ action.data.key ] = action.data.value;
+        }
 
         return state;
     }
 
-    return state;
+    return {
+        FileBase64: null,
+        Attributes: {}
+    };
 }
 
 export default {

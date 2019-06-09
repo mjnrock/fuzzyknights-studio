@@ -4,29 +4,45 @@ import { connect } from "react-redux";
 import Dux from "./dux/package";
 
 class FileSystem extends Component {
-    componentWillUpdate(nextProps) {
-        if(nextProps.FileSystem && nextProps.FileSystem.FileBase64) {
+    constructor() {
+        super();
+
+        this.state = {};
+    }
+    componentDidUpdate() {        
+        if(this.props.FileSystem.FileBase64 !== null) {
             let canvas = document.getElementById("image-overview"),
                 ctx = canvas.getContext("2d");
 
             let image = new Image();
             image.onload = () => {
                 ctx.drawImage(image, 0, 0);
+                
+                let state = {
+                    "image-width": image.width,
+                    "image-height": image.height
+                };
+                this.setState(state);
+
+                this.props.SetAttribute([
+                    [ "image-data", ctx.getImageData(0, 0, canvas.width, canvas.height).data ],
+                    [ "image-width", image.width ],
+                    [ "image-height", image.height ]
+                ]);
             };
-            image.src = nextProps.FileSystem.FileBase64;
+            image.src = this.props.FileSystem.FileBase64;
         }
     }
 
     onChange(_this, e) {
         _this.props.SetAttribute(e.target.name, e.target.value);
-        
 
         // TODO This is for turn Canvas into Array Data; put in the relevant place
         let canvas = document.getElementById("image-overview"),
             ctx = canvas.getContext("2d");
             
-            //  Get ImageData from Canvas
-        let data = ctx.getImageData(0, 0, canvas.width, canvas.height).data,
+        //      Get ImageData from Canvas
+        let data = this.props.FileSystem.Attributes["image-data"],  //.ctx.getImageData(0, 0, canvas.width, canvas.height).data,
             //  Creates new ImageData object
             imgd = ctx.createImageData(canvas.width, canvas.height);
 
@@ -37,9 +53,14 @@ class FileSystem extends Component {
         //  Put new ImageData into context
         ctx.putImageData(imgd, 0, 0);
 
+        let th = this.props.FileSystem.Attributes["tile-height"] || 128,
+            tw = this.props.FileSystem.Attributes["tile-width"] || 128,
+            tx = this.props.FileSystem.Attributes["tile-offset-x"] || 0,
+            ty = this.props.FileSystem.Attributes["tile-offset-y"] || 0;
+
         for(let i = 0; i < 5; i++) {
             for(let j = 0; j < 5; j++) {
-                ctx.strokeRect(i * 100, j * 100, 100, 100);
+                ctx.strokeRect((i * tw) + tx, (j * th) + ty, tw, th);
             }
         }
     }
@@ -70,15 +91,15 @@ class FileSystem extends Component {
                 />
 
                 <div>
-                    H: <input type="number" defaultValue={ 0 } name="image-height" onChange={ (e) => this.onChange(this, e) } />
-                    W: <input type="number" defaultValue={ 0 } name="image-width" onChange={ (e) => this.onChange(this, e) } />
+                    H: <input type="number" name="image-height" value={ this.state["image-height"] } readonly />
+                    W: <input type="number" name="image-width" value={ this.state["image-width"] } readonly />
                 </div>
 
                 <div>
                     H: <input type="number" defaultValue={ 128 } name="tile-height" onChange={ (e) => this.onChange(this, e) } />
                     W: <input type="number" defaultValue={ 128 } name="tile-width" onChange={ (e) => this.onChange(this, e) } />
-                    X: <input type="number" defaultValue={ 0 } name="tile-origin-x" onChange={ (e) => this.onChange(this, e) } />
-                    Y: <input type="number" defaultValue={ 0 } name="tile-origin-y" onChange={ (e) => this.onChange(this, e) } />
+                    X: <input type="number" defaultValue={ 0 } name="tile-offset-x" onChange={ (e) => this.onChange(this, e) } />
+                    Y: <input type="number" defaultValue={ 0 } name="tile-offset-y" onChange={ (e) => this.onChange(this, e) } />
                 </div>
             </div>
         );
