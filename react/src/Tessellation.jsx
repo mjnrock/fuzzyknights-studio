@@ -12,8 +12,8 @@ class Tessellation extends Component {
         };
     }
 
-    onChange(_this, e) {
-        _this.props.SetAttribute(e.target.name, e.target.value);
+    onChange(e) {
+        this.props.SetAttribute(e.target.name, e.target.value);
 
         let canvas = document.getElementById("image-overview"),
             ctx = canvas.getContext("2d");
@@ -32,29 +32,14 @@ class Tessellation extends Component {
         imgd.data.set(data);
         ctx.putImageData(imgd, 0, 0);
 
-        let frameArray = [];
         for(let i = 0; i < Math.ceil(w / tw); i++) {
             for(let j = 0; j < Math.ceil(h / th); j++) {
                 ctx.strokeRect((i * tw) + tx, (j * th) + ty, tw, th);
-
-                frameArray.push({
-                    x: i,
-                    y: j,
-                    tw,
-                    th,
-                    data: ctx.getImageData((i * tw) + tx, (j * th) + ty, tw, th)
-                });
             }
         }
-
-        this.setState({
-            Frames: frameArray
-        });
-        // _this.props.SetAttribute("frames", frameArray);
     }
 
     render() {
-        console.log(this.props.Tessellation["frames"] && this.props.Tessellation["frames"].length > 0);
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.props.Tessellation) }>(Tessellation) State</button>
@@ -66,27 +51,10 @@ class Tessellation extends Component {
                     </div>
 
                     <div className="row mb-3">
-                        <input className="cell mr-2" type="number" defaultValue={ 128 } name="tile-height" onChange={ (e) => this.onChange(this, e) } data-role="input" data-prepend="H" />
-                        <input className="cell mr-2" type="number" defaultValue={ 128 } name="tile-width" onChange={ (e) => this.onChange(this, e) } data-role="input" data-prepend="W" />
-                        <input className="cell mr-2" type="number" defaultValue={ 0 } name="tile-offset-x" onChange={ (e) => this.onChange(this, e) } data-role="input" data-prepend="X" />
-                        <input className="cell" type="number" defaultValue={ 0 } name="tile-offset-y" onChange={ (e) => this.onChange(this, e) } data-role="input" data-prepend="Y" />
-                    </div>
-
-                    <div className="d-flex flex-row flex-wrap" id="frame-container">
-                        {/* {
-                            this.props.Tessellation["frames"] && this.props.Tessellation["frames"].length > 0 ? this.props.Tessellation["frames"].map((e, i) => {
-                                return (
-                                    <FrameCanvas className="border bd-cyan mr-1" payload={ e } key={ i } />
-                                )
-                            }) : null
-                        } */}
-                        {
-                            this.state.Frames.length > 0 ? this.state.Frames.map((e, i) => {
-                                return (
-                                    <FrameCanvas className="border bd-cyan mr-1" payload={ e } key={ i } />
-                                )
-                            }) : null
-                        }
+                        <input className="cell mr-2" type="number" defaultValue={ 128 } name="tile-height" onChange={ (e) => this.onChange(e) } data-role="input" data-prepend="H" />
+                        <input className="cell mr-2" type="number" defaultValue={ 128 } name="tile-width" onChange={ (e) => this.onChange(e) } data-role="input" data-prepend="W" />
+                        <input className="cell mr-2" type="number" defaultValue={ 0 } name="tile-offset-x" onChange={ (e) => this.onChange(e) } data-role="input" data-prepend="X" />
+                        <input className="cell" type="number" defaultValue={ 0 } name="tile-offset-y" onChange={ (e) => this.onChange(e) } data-role="input" data-prepend="Y" />
                     </div>
                 </div>
             </div>
@@ -94,30 +62,39 @@ class Tessellation extends Component {
     }
 }
 
-export class FrameCanvas extends React.Component {
-    constructor(props) {
-        super(props);
+// export class FrameCanvas extends React.Component {
+//     constructor(props) {
+//         super(props);
 
-        this.ref = React.createRef();
-    }
+//         this.ref = React.createRef();
+//     }
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.payload.data) {
-            let ctx = this.ref.current.getContext("2d");
+//     run() {
+//         let ctx = this.ref.current.getContext("2d");
 
-            this.ref.current.width = nextProps.payload.tw;
-            this.ref.current.height = nextProps.payload.th;
-            ctx.clearRect(0, 0, this.ref.current.width, this.ref.current.height);
-            ctx.putImageData(nextProps.payload.data, 0, 0);
-        }
-    }
+//         // this.ref.current.width = nextProps.payload.tw;
+//         // this.ref.current.height = nextProps.payload.th;
+//         ctx.clearRect(0, 0, this.props.payload.tw, this.props.payload.th);
+//         ctx.putImageData(this.props.payload.data, 0, 0);
+//     }
 
-    render() {
-        return (
-            <canvas ref={ this.ref } { ...this.props } />
-        );
-    }
-}
+//     componentDidUpdate() {
+//         if(this.props.payload.data) {
+//             this.run();
+//         }
+//     }
+//     componentWillUpdate() {
+//         if(this.props.payload.data) {
+//             this.run();
+//         }
+//     }
+
+//     render() {
+//         return (
+//             <canvas ref={ this.ref } className="border bd-cyan mr-1" width={ this.props.payload.tw } height={ this.props.payload.th } />
+//         );
+//     }
+// }
 
 export default connect(
     (state) => ({

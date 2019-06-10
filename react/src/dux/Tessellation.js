@@ -29,6 +29,7 @@ function Reducer(state = {}, action) {
         } else {
             state[ action.data.key ] = action.data.value;
         }
+        console.log(state);
     }
 
     return state;
