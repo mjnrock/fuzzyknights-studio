@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import Dux from "./dux/package";
 
 class FileSystem extends Component {
-    onInputChange(_this, e) {
+    onFileUpload(e) {
         let file = e.target.files[0],
             reader = new FileReader();
         
@@ -21,7 +21,7 @@ class FileSystem extends Component {
 
                 ctx.drawImage(img, 0, 0);
 
-                _this.props.SetAttribute([
+                this.props.SetAttribute([
                     [ "image-data", ctx.getImageData(0, 0, width, height).data ],
                     [ "image-width", width ],
                     [ "image-height", height ]
@@ -47,7 +47,7 @@ class FileSystem extends Component {
                     type="file"
                     accept="image/*"
                     data-role="file"
-                    onChange={ (e) => this.onInputChange(this, e) }
+                    onChange={ this.onFileUpload.bind(this) }
                 />
             </div>
         );
