@@ -3,6 +3,15 @@ import React, { Component } from "react";
 import { getState, WatcherComponent } from "./../lib/FKS";
 
 class FileSystem extends WatcherComponent {
+    constructor() {
+        super();
+        setInterval(() => {
+            this.setLocalState({
+                fish: Date.now()
+            });
+        }, 250);
+    }
+
     onFileUpload(e) {
         let file = e.target.files[0],
             reader = new FileReader();
@@ -30,12 +39,12 @@ class FileSystem extends WatcherComponent {
         reader.readAsDataURL(file);
     }
 
-    render() {        
+    render() {
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
 
-                <p>{ this.state._fks.cat }</p>
+                <p>{ this.getLocalState("fish") }</p>
 
                 <canvas
                     id="image-overview"
