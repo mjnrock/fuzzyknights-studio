@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-
-import Dux from "./dux/package";
 
 class Tessellation extends Component {
     constructor() {
@@ -42,12 +39,12 @@ class Tessellation extends Component {
     render() {
         return (
             <div className="container">
-                <button className="button info outline" onClick={ () => console.log(this.props.Tessellation) }>(Tessellation) State</button>
+                <button className="button info outline" onClick={ () => console.log(this.state) }>(Tessellation) State</button>
 
                 <div className="container">
                     <div className="row mb-3">
-                        <input className="cell mr-2" type="number" name="image-height" value={ this.props.FileSystem["image-height"] } readOnly data-role="input" data-prepend="H" />
-                        <input className="cell" type="number" name="image-width" value={ this.props.FileSystem["image-width"] } readOnly data-role="input" data-prepend="W" />
+                        <input className="cell mr-2" type="number" name="image-height" readOnly data-role="input" data-prepend="H" />
+                        <input className="cell" type="number" name="image-width" readOnly data-role="input" data-prepend="W" />
                     </div>
 
                     <div className="row mb-3">
@@ -62,46 +59,4 @@ class Tessellation extends Component {
     }
 }
 
-// export class FrameCanvas extends React.Component {
-//     constructor(props) {
-//         super(props);
-
-//         this.ref = React.createRef();
-//     }
-
-//     run() {
-//         let ctx = this.ref.current.getContext("2d");
-
-//         // this.ref.current.width = nextProps.payload.tw;
-//         // this.ref.current.height = nextProps.payload.th;
-//         ctx.clearRect(0, 0, this.props.payload.tw, this.props.payload.th);
-//         ctx.putImageData(this.props.payload.data, 0, 0);
-//     }
-
-//     componentDidUpdate() {
-//         if(this.props.payload.data) {
-//             this.run();
-//         }
-//     }
-//     componentWillUpdate() {
-//         if(this.props.payload.data) {
-//             this.run();
-//         }
-//     }
-
-//     render() {
-//         return (
-//             <canvas ref={ this.ref } className="border bd-cyan mr-1" width={ this.props.payload.tw } height={ this.props.payload.th } />
-//         );
-//     }
-// }
-
-export default connect(
-    (state) => ({
-        FileSystem: state.FileSystem,
-        Tessellation: state.Tessellation
-    }),
-    (dispatch) => ({
-        SetAttribute: (...args) => dispatch(Dux.Tessellation.UpdateAttribute(...args))
-    })
-)(Tessellation);
+export default Tessellation;

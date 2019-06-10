@@ -34,18 +34,10 @@ function Reducer(state = {}, action) {
     return state;
 }
 
-// function EpicLoadFile(action$) {
-//     return action$.pipe(
-//         ofType(EnumFileSystem.LOAD_FILE)
-//     );
-// }
-
 export default {
     EnumFileSystem,
 
     UpdateAttribute,
-
-    // EpicLoadFile,
 
     Reducer
 };

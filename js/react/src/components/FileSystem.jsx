@@ -1,41 +1,41 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
 
-import Dux from "./dux/package";
+import { getState, WatcherComponent } from "./../lib/FKS";
 
-class FileSystem extends Component {
+class FileSystem extends WatcherComponent {
     onFileUpload(e) {
         let file = e.target.files[0],
             reader = new FileReader();
         
         reader.onload = (e) => {
-            let img = new Image(),
-                height, width;
+            let img = new Image();
 
-            img.onload = async () => {
-                height = await img.height;
-                width = await img.width;
+            img.onload = () => {
+                let height = img.height;
+                let width = img.width;
 
                 let canvas = document.getElementById("image-overview"),
                     ctx = canvas.getContext("2d");
 
                 ctx.drawImage(img, 0, 0);
 
-                this.props.SetAttribute([
-                    [ "image-data", ctx.getImageData(0, 0, width, height).data ],
-                    [ "image-width", width ],
-                    [ "image-height", height ]
-                ]);
+                // this.props.SetAttribute([
+                //     [ "image-data", ctx.getImageData(0, 0, width, height).data ],
+                //     [ "image-width", width ],
+                //     [ "image-height", height ]
+                // ]);
             };
             img.src = e.target.result;
         }
         reader.readAsDataURL(file);
     }
 
-    render() {
+    render() {        
         return (
             <div className="container">
-                <button className="button info outline" onClick={ () => console.log(this.props.FileSystem) }>(File System) State</button>
+                <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
+
+                <p>{ this.state._fks.cat }</p>
 
                 <canvas
                     id="image-overview"
@@ -54,11 +54,4 @@ class FileSystem extends Component {
     }
 }
 
-export default connect(
-    (state) => ({
-        FileSystem: state.FileSystem
-    }),
-    (dispatch) => ({
-        SetAttribute: (...args) => dispatch(Dux.FileSystem.UpdateAttribute(...args))
-    })
-)(FileSystem);
+export default FileSystem;
