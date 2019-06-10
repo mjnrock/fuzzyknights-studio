@@ -7,10 +7,11 @@ import Tessellation from "./../Tessellation";
 class SpriteUpload extends Component {
     render() {
         return (
-            <div>
-                <button onClick={ () => console.log(this.props) }>State</button>
+            <div className="container">
+                <button className="button info outline" onClick={ () => console.log(this.props) }>State</button>
 
                 <FileSystem />
+                <br />
                 <Tessellation />
             </div>
         );

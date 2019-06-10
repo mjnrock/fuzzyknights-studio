@@ -8,7 +8,6 @@ import Dux from "./dux/package";
 import App from "./App";
 
 const store = createStore(Dux.RootReducer);
-console.log(store);
 
 ReactDOM.render(
     <Provider store={ store }>

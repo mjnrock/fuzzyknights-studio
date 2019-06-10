@@ -34,8 +34,8 @@ class FileSystem extends Component {
 
     render() {
         return (
-            <div>
-                <button onClick={ () => console.log(this.props.FileSystem) }>(File System) State</button>
+            <div className="container">
+                <button className="button info outline" onClick={ () => console.log(this.props.FileSystem) }>(File System) State</button>
 
                 <canvas
                     id="image-overview"
@@ -46,6 +46,7 @@ class FileSystem extends Component {
                     id="load-image"
                     type="file"
                     accept="image/*"
+                    data-role="file"
                     onChange={ (e) => this.onInputChange(this, e) }
                 />
             </div>
