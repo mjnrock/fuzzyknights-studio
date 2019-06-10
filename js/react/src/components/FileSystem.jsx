@@ -5,21 +5,16 @@ import { getState, WatcherComponent } from "./../lib/FKS";
 class FileSystem extends WatcherComponent {
     constructor() {
         super();
-        setInterval(() => {
-            this.setLocalState({
-                fish: Date.now()
-            });
-        }, 250);
     }
 
-    onFileUpload(e) {
+    async onFileUpload(e) {
         let file = e.target.files[0],
             reader = new FileReader();
         
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
             let img = new Image();
 
-            img.onload = () => {
+            img.onload = async () => {
                 let height = img.height;
                 let width = img.width;
 
@@ -28,11 +23,9 @@ class FileSystem extends WatcherComponent {
 
                 ctx.drawImage(img, 0, 0);
 
-                // this.props.SetAttribute([
-                //     [ "image-data", ctx.getImageData(0, 0, width, height).data ],
-                //     [ "image-width", width ],
-                //     [ "image-height", height ]
-                // ]);
+                this.addLocalState({
+                    "image-data": await (await ctx.getImageData(0, 0, width, height)).data
+                });
             };
             img.src = e.target.result;
         }
@@ -43,8 +36,6 @@ class FileSystem extends WatcherComponent {
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
-
-                <p>{ this.getLocalState("fish") }</p>
 
                 <canvas
                     id="image-overview"

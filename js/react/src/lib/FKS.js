@@ -12,9 +12,7 @@ export class WatcherComponent extends Component {
         super(props);
 
         this._uuid = uuidv4();
-        this.state = {
-            _fks: {}
-        };
+        this.state = {};
     }
 
     componentWillMount() {
@@ -25,13 +23,21 @@ export class WatcherComponent extends Component {
     }
 
     next() {
-        this.setState({
-            ...this.state,
-            _fks: getState()
-        })
+        this.setState(this.getLocalState());
     }
 
     setLocalState(state = {}) {
+        window._fks = Object.freeze({
+            ...window._fks,
+            localState: {
+                ...window._fks.localState,
+                [ this._uuid ]: state
+            }
+        });
+
+        this.next();
+    }
+    addLocalState(state = {}) {
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
@@ -42,6 +48,8 @@ export class WatcherComponent extends Component {
                 }
             }
         });
+
+        this.next();
     }
     getLocalState(search) {
         if(search) {
@@ -54,9 +62,9 @@ export class WatcherComponent extends Component {
                 });
     
                 return state;
-            } catch (e) {
-                return null;
-            }
+            } catch (e) {}
+            
+            return null;
         }
 
         return window._fks.localState[ this._uuid ];

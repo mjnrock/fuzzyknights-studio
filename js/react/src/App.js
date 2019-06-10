@@ -6,18 +6,6 @@ import { setState, WatcherComponent } from "./lib/FKS";
 import Routes from "./routes/package";
 
 class App extends WatcherComponent {
-    constructor() {
-        super();
-
-        window._fks.state.cat = 15;
-
-        setInterval(() => {
-            setState(state => ({
-                cat: state.cat + 5
-            }));
-        }, 250);
-    }
-
     render() {
         return (        
             <BrowserRouter>
