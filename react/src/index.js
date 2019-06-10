@@ -1,13 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
 import { Provider } from "react-redux";
-
-import Dux from "./dux/package";
 
 import App from "./App";
 
-const store = createStore(Dux.RootReducer);
+import configureStore from "./configureStore";
+const store = configureStore();
 
 ReactDOM.render(
     <Provider store={ store }>
