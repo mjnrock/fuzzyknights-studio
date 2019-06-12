@@ -72,10 +72,10 @@ export class WatcherComponent extends Component {
             ...this.getLocalState()
         });
     }
-    checkin() {
+    pushSync() {
         this.setLocalState(this.state);
     }
-    checkout() {
+    pullSync() {
         this.setState(this.getLocalState());
     }
 
