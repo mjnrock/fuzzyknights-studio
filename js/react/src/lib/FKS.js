@@ -1,5 +1,6 @@
 import { Component } from "react";
 import uuidv4 from "uuid/v4";
+import { type } from "os";
 
 window._fks = window._fks || Object.freeze({
     subscribers: {},
@@ -22,11 +23,15 @@ export class WatcherComponent extends Component {
         unsubscribe(this);
     }
 
-    next() {
-        this.setState(this.getLocalState());
+    next(state) {
+        if(state !== void 0) {
+            this.setState(state);
+        } else {
+            this.setState(this.getLocalState());
+        }
     }
 
-    setLocalState(state = {}) {
+    setLocalState(state = {}, callback = null) {
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
@@ -35,9 +40,13 @@ export class WatcherComponent extends Component {
             }
         });
 
-        this.next();
+        this.next(state);
+
+        if(typeof callback === "function") {
+            callback(state);
+        }
     }
-    addLocalState(state = {}) {
+    addLocalState(state = {}, callback = null) {
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
@@ -49,7 +58,11 @@ export class WatcherComponent extends Component {
             }
         });
 
-        this.next();
+        this.next(state);
+
+        if(typeof callback === "function") {
+            callback(state);
+        }
     }
     getLocalState(search) {
         if(search) {
@@ -63,7 +76,7 @@ export class WatcherComponent extends Component {
     
                 return state;
             } catch (e) {}
-            
+
             return null;
         }
 

@@ -25,7 +25,7 @@ class FileSystem extends WatcherComponent {
 
                 this.addLocalState({
                     "image-data": await (await ctx.getImageData(0, 0, width, height)).data
-                });
+                }, (state) => console.log(JSON.stringify(state)));
             };
             img.src = e.target.result;
         }
