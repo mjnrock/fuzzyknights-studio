@@ -47,7 +47,11 @@ class FileSystem extends WatcherComponent {
                 <button className="button info outline" 
                     onClick={
                         () => this.send({ msg: "Hey" })
-                    }>Click</button>
+                    }>WS</button>
+                <button className="button info outline" 
+                    onClick={
+                        () => this.fetch("http://localhost:3087/validate")
+                    }>Fetch</button>
 
                 <canvas
                     id="image-overview"

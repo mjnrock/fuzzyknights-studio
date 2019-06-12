@@ -23,7 +23,11 @@ class WebSocketHelper {
 
 	OnMessage(e) {
 		if(e.isTrusted) {
-            return e.data;
+            try {
+                return JSON.parse(e.data);
+            } catch(e) {
+                console.log(e);
+            }
         }
         
         return false;

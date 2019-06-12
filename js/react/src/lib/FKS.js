@@ -3,25 +3,17 @@ import uuidv4 from "uuid/v4";
 import WebSocketHelper from "./WebSocketHelper";
 
 window._fks = window._fks || Object.freeze({
-    ws: new WebSocketHelper(),
+    ws: new WebSocketHelper(`ws://localhost:3087/ws`),
     subscribers: {},
     state: {},
     localState: {}
 });
-window._fks.ws.OnMessage = (e) => {    
-    if(e.isTrusted) {
-        try {
-            let data = JSON.parse(e.data);
+window._fks.ws.ws.onmessage = (e) => {
+    let data = window._fks.ws.OnMessage(e);    
     
-            if(data.recipient && window._fks.subscribers[ data.recipient ]) {
-                window._fks.subscribers[ data.recipient ].addMessage(data);
-            }
-        } catch (e) {
-            console.warn("Invalid JSON response");
-        }
+    if(data !== false && data.recipient && window._fks.subscribers[ data.recipient ]) {
+        window._fks.subscribers[ data.recipient ].addMessage(data);
     }
-
-    return false;
 }
 
 export class WatcherComponent extends Component {
@@ -46,6 +38,26 @@ export class WatcherComponent extends Component {
         unsubscribe(this);
     }
 
+    async fetch(url) {
+        try {
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log({
+                    from: url,
+                    for: this._uuid,
+                    payload: data
+                });
+
+                this.addMessage({
+                    recipient: this._uuid,
+                    from: url,
+                    payload: data
+                });
+            });
+        } catch(e) {}
+    }
+
     async next(state) {
         if(state !== void 0) {
             this.setState(await state);
@@ -65,11 +77,15 @@ export class WatcherComponent extends Component {
         this.setLocalState(state);
     }
     //  TODO Do something with the message
-    retrieveMessage() {
+    retrieveMessage(fullMessage = false) {
         let msg = this.getLocalState()._queue.shift();
 
         if(msg) {
-            return msg;
+            if(fullMessage) {
+                return msg;
+            }
+            
+            return msg.payload;
         }
     }
 
