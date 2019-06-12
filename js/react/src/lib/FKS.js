@@ -1,6 +1,5 @@
 import { Component } from "react";
 import uuidv4 from "uuid/v4";
-import { type } from "os";
 
 window._fks = window._fks || Object.freeze({
     subscribers: {},
@@ -23,64 +22,60 @@ export class WatcherComponent extends Component {
         unsubscribe(this);
     }
 
-    next(state) {
+    async next(state) {
         if(state !== void 0) {
-            this.setState(state);
+            this.setState(await state);
         } else {
-            this.setState(this.getLocalState());
+            this.setState(await this.getLocalState());
         }
     }
 
-    setLocalState(state = {}, callback = null) {
+    async setLocalState(state = {}, callback = null) {
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
-                ...window._fks.localState,
-                [ this._uuid ]: state
+                ...window._fks.localState || {},
+                [ this._uuid ]: await state
             }
         });
 
-        this.next(state);
+        this.next(await state);
 
         if(typeof callback === "function") {
-            callback(state);
+            callback(await state);
         }
     }
-    addLocalState(state = {}, callback = null) {
+    async addLocalState(state = {}, callback = null) {
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
-                ...window._fks.localState,
+                ...window._fks.localState || {},
                 [ this._uuid ]: {
                     ...window._fks.localState[ this._uuid ] || {},
-                    ...state
+                    ...await state
                 }
             }
         });
 
-        this.next(state);
+        this.next(await state);
 
         if(typeof callback === "function") {
-            callback(state);
+            callback(await state);
         }
     }
     getLocalState(search) {
         if(search) {
-            try {
-                let state = window._fks.localState[ this._uuid ],
-                    tiers = search.split(".");
-    
-                tiers.forEach(t => {
-                    state = state[t];
-                });
-    
-                return state;
-            } catch (e) {}
+            let state = window._fks.localState[ this._uuid ] || {},
+                tiers = search.split(".");
 
-            return null;
+            tiers.forEach(t => {
+                state = state[t];
+            });
+
+            return state;
         }
 
-        return window._fks.localState[ this._uuid ];
+        return window._fks.localState[ this._uuid ] || {};
     }
 }
 
@@ -100,24 +95,13 @@ export function unsubscribe(unsubscriber) {
     }
 }
 
-export function setState(state = {}) {
-    if(typeof state === "function") {
-        window._fks = Object.freeze({
-            ...window._fks,
-            state: {
-                ...window._fks.state,
-                ...state(window._fks.state)
-            }
-        });
-    } else {
-        window._fks = Object.freeze({
-            ...window._fks,
-            state: {
-                ...window._fks.state,
-                ...state
-            }
-        });
-    }
+export async function setState(state = {}) {
+    window._fks = Object.freeze({
+        ...window._fks,
+        state: {
+            ...await state
+        }
+    });
 
     Object.values(window._fks.subscribers).forEach(s => {
         s.next(window._fks.state);
@@ -127,24 +111,6 @@ export function setState(state = {}) {
 export function getState() {
     return window._fks.state;
 }
-
-
-
-// export function setState(state = {}, localState = true) {
-//     if(localState) {
-
-//     }
-
-//     return state
-// }
-
-// export function getState(localState = true) {
-//     if(localState) {
-
-//     }
-
-//     return getState(false);
-// }
 
 export default {
     subscribe,
