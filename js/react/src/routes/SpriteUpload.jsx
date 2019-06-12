@@ -7,9 +7,10 @@ class SpriteUpload extends Component {
     render() {
         return (
             <div className="container">
-                <button className="button info outline" onClick={ () => console.log(this.state) }>State</button>
+                <button className="button info outline" onClick={ () => console.log(window._fks) }>State</button>
 
-                <FileSystem />
+                <FileSystem fksid={ 1 } />
+                <FileSystem fksid={ 2 } />
                 <br />
                 <Tessellation />
             </div>

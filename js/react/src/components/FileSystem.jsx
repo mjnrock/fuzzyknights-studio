@@ -32,16 +32,21 @@ class FileSystem extends WatcherComponent {
         reader.readAsDataURL(file);
     }
 
+    componentWillUpdate(props, state) {
+        if(this.hasMessages()) {
+            let msg = this.retrieveMessage();
+
+            console.info(msg);
+        }
+    }
+
     render() {
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
                 <button className="button info outline" 
                     onClick={
-                        () => this.next(
-                            fetch("http://localhost:3087/validate")
-                            .then(response => response.json())
-                        )
+                        () => this.send({ msg: "Hey" })
                     }>Click</button>
 
                 <canvas
