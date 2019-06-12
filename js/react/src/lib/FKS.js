@@ -66,6 +66,19 @@ export class WatcherComponent extends Component {
         }
     }
 
+    sync() {
+        this.next({
+            ...this.state,
+            ...this.getLocalState()
+        });
+    }
+    checkin() {
+        this.setLocalState(this.state);
+    }
+    checkout() {
+        this.setState(this.getLocalState());
+    }
+
     hasMessages() {
         return this.getLocalState()._queue.length > 0;
     }
