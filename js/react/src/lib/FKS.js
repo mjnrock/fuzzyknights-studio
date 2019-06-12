@@ -38,22 +38,90 @@ export class WatcherComponent extends Component {
         unsubscribe(this);
     }
 
-    async fetch(url) {
+    async fetchMessage(url, manipulator = null) {
+        const _this = this;
+
         try {
             fetch(url)
             .then(response => response.json())
             .then(data => {
-                console.log({
-                    from: url,
-                    for: this._uuid,
-                    payload: data
-                });
+                if(typeof manipulator === "function") {
+                    let mdata = manipulator(data, _this, window._fks);
 
-                this.addMessage({
-                    recipient: this._uuid,
-                    from: url,
-                    payload: data
-                });
+                    this.addMessage({
+                        recipient: this._uuid,
+                        from: url,
+                        payload: mdata
+                    });
+
+                    this.addMessage({
+                        recipient: this._uuid,
+                        from: url,
+                        payload: data
+                    });
+                }
+            });
+        } catch(e) {}
+    }
+
+    hasMessages() {
+        return this.getLocalState()._queue.length > 0;
+    }
+    addMessage(msg) {
+        let state = this.getLocalState();
+        state._queue.push(msg);
+
+
+        this.setLocalState(state);
+    }
+    retrieveMessage({ fullMessage = false, processor = null }) {
+        let msg = this.getLocalState()._queue.pop();
+
+        if(fullMessage) {
+            if(typeof processor === "function") {
+                return processor(msg, this, window._fks);
+            }
+
+            return msg;
+        } else {
+            if(typeof processor === "function") {
+                return processor(msg.payload, this, window._fks);
+            }
+    
+            return msg.payload;
+        }
+    }
+    processQueue(processor, { alwaysRemove = false, indexRemove = [] }) {
+        if(typeof processor === "function") {
+            let queue = this.getLocalState()._queue,
+                remove = indexRemove;
+
+            for(let i in queue) {
+                let removeMessage = processor(queue[ i ], this, window._fks);
+
+                if(removeMessage === true || alwaysRemove === true) {
+                    remove.push(i);
+                }
+            }
+
+            remove.forEach(i => this.getLocalState()._queue.splice(i, 1));
+        }
+    }
+
+    async fetchLocalState(url, manipulator = null) {
+        const _this = this;
+
+        try {
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if(typeof manipulator === "function") {
+                    let mdata = manipulator(data, _this, window._fks);
+
+                    this.setLocalState(mdata);
+                } else {
+                    this.setLocalState(data);
+                }
             });
         } catch(e) {}
     }
@@ -79,30 +147,7 @@ export class WatcherComponent extends Component {
         this.setState(this.getLocalState());
     }
 
-    hasMessages() {
-        return this.getLocalState()._queue.length > 0;
-    }
-    addMessage(msg) {
-        let state = this.getLocalState();
-        state._queue.push(msg);
-
-
-        this.setLocalState(state);
-    }
-    //  TODO Do something with the message
-    retrieveMessage(fullMessage = false) {
-        let msg = this.getLocalState()._queue.shift();
-
-        if(msg) {
-            if(fullMessage) {
-                return msg;
-            }
-            
-            return msg.payload;
-        }
-    }
-
-    async setLocalState(state = {}, callback = null) {
+    async setLocalState(state = {}, { callback = null, overwrite = true }) {
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
@@ -111,28 +156,34 @@ export class WatcherComponent extends Component {
             }
         });
 
-        this.next(await state);
+        if(overwrite) {
+            this.next(await state);
+        }
 
         if(typeof callback === "function") {
             callback(await state);
         }
     }
-    async addLocalState(state = {}, callback = null) {
+    async addLocalState(state = {}, { callback = null, overwrite = true }) {
+        let localState = await {
+            ...window._fks.localState[ this._uuid ] || {},
+            ...await state
+        };
+
         window._fks = Object.freeze({
             ...window._fks,
             localState: {
                 ...window._fks.localState || {},
-                [ this._uuid ]: {
-                    ...window._fks.localState[ this._uuid ] || {},
-                    ...await state
-                }
+                [ this._uuid ]: localState
             }
         });
 
-        this.next(await state);
+        if(overwrite) {
+            this.next(localState);
+        }
 
         if(typeof callback === "function") {
-            callback(await state);
+            callback(localState);
         }
     }
     getLocalState(search) {
