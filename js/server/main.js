@@ -38,13 +38,20 @@ app.get("/validate", (req, res) => {
 
 app.ws("/ws", function (client, req) {
     console.log(`[CLIENT CONNECTED]: { Timestamp: ${Date.now()}, IP: ${req.connection.remoteAddress} }`);
-    client.send(JSON.stringify({
-        recipient: "Matt",
-        payload: "This is the data"
-    }));
 
 	client.on("message", function(msg) {
 		console.log(`[MESSAGE RECEIVED]: { Timestamp: ${Date.now()} }`);
+        
+        try {
+            let json = JSON.parse(msg);
+            
+            client.send(JSON.stringify({
+                recipient: json.sender,
+                payload: "This is some payload"
+            }));
+        } catch(e) {
+            console.log("Unable to parse websocket message");
+        }
 	});
 
 	client.on("close", function() {

@@ -15,13 +15,6 @@ window._fks.ws.OnMessage = (e) => {
     
             if(data.recipient && window._fks.subscribers[ data.recipient ]) {
                 window._fks.subscribers[ data.recipient ].addMessage(data);
-                
-
-                // if(!Array.isArray(window._fks.queue[ data.recipient ])) {
-                //     window._fks.queue[ data.recipient ] = [];
-                // }
-        
-                // window._fks.queue[ data.recipient ].push(data);
             }
         } catch (e) {
             console.warn("Invalid JSON response");
@@ -35,12 +28,15 @@ export class WatcherComponent extends Component {
     constructor(props) {
         super(props);
 
-        this._uuid = "Matt";//uuidv4();
+        this._uuid = uuidv4();
         this.state = {
             _queue: []
         };
 
-        this.send = (msg) => window._fks.ws.Send(msg);
+        this.send = (msg) => window._fks.ws.Send({
+            ...msg,
+            sender: this._uuid
+        });
     }
 
     componentWillMount() {
