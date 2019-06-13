@@ -10,7 +10,7 @@ class App extends WatcherComponent {
         return (        
             <BrowserRouter>
                 <div>
-                    <Route exact path="/" component={() => "Sup guy?"} />
+                    <Route exact path="/" component={() => "Ciao ciao! ^_^"} />
                     <Route path="/test" component={ Routes.SpriteUpload } />
                 </div>
             </BrowserRouter>

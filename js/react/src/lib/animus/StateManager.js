@@ -30,7 +30,7 @@ class StateManager extends Manager {
 	}
 
 	static GetInstance() {
-		return Manager._scope().managers[ Manager.processEndpoint(ENDPOINT) ];
+		return Manager._scope().managers[ Manager._processEndpoint(ENDPOINT) ];
 	}
 }
 
