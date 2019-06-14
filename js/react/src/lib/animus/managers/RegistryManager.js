@@ -24,7 +24,9 @@ class RegistryManager extends Manager {
     }
 
 	Register(entity) {
-		let registry = this.GetRegistry();
+		let registry = {
+            ...this.GetRegistry()
+        };
 
 		if(entity._uuid) {
 			registry[ entity._uuid ] = entity;
@@ -35,7 +37,9 @@ class RegistryManager extends Manager {
 		return this;
 	}
 	Unregister(entity) {
-		let registry = this.GetRegistry();
+		let registry = {
+            ...this.GetRegistry()
+        };
 
 		if(entity._uuid) {
 			delete registry[ entity._uuid ];

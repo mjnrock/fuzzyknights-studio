@@ -1,11 +1,13 @@
 import Manager from "./Manager";
 import StateManager from "./StateManager";
 import RegistryManager from "./RegistryManager";
+import EventManager from "./EventManager";
 
 export function Init() {
 	try {
 		new StateManager();
 		new RegistryManager();
+		new EventManager();
 	
 		return true;
 	} catch(e) {
@@ -18,5 +20,6 @@ export default {
 	
 	Manager,
 	StateManager,
-	RegistryManager
+    RegistryManager,
+    EventManager
 };

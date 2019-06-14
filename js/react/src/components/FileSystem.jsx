@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
-import { getState, WatcherComponent } from "./../lib/FKS";
+import SmartComponent from "./../lib/animus/SmartComponent";
 
-class FileSystem extends WatcherComponent {
+class FileSystem extends SmartComponent {
     constructor() {
         super();
     }
@@ -23,9 +23,9 @@ class FileSystem extends WatcherComponent {
 
                 ctx.drawImage(img, 0, 0);
 
-                this.addLocalState({
-                    "image-data": await (await ctx.getImageData(0, 0, width, height)).data
-                }, (state) => console.log(JSON.stringify(state)));
+                // this.addLocalState({
+                //     "image-data": await (await ctx.getImageData(0, 0, width, height)).data
+                // }, (state) => console.log(JSON.stringify(state)));
             };
             img.src = e.target.result;
         }
@@ -46,12 +46,8 @@ class FileSystem extends WatcherComponent {
                 <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
                 <button className="button info outline" 
                     onClick={
-                        () => this.send({ msg: "Hey" })
-                    }>WS</button>
-                <button className="button info outline" 
-                    onClick={
-                        () => this.fetch("http://localhost:3087/validate")
-                    }>Fetch</button>
+                        () => console.log(this.Dispatch("test-1", 1231648948656165))
+                    }>Get State</button>
 
                 <canvas
                     id="image-overview"

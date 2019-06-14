@@ -18,6 +18,16 @@ class EventManager extends Manager {
 		this.LocalToGlobal(this.GetEvents());
     }
 
+    GetEnums() {
+        return this._enums;
+    }
+    GetActions() {
+        return this._actions;
+    }
+    GetReducers() {
+        return this._reducers;
+    }
+
     GetEnum(_enum, key) {
         return this._enums[ _enum ][ key ];
     }
@@ -27,8 +37,11 @@ class EventManager extends Manager {
     GetReducer(key) {
         return this._reducers[ key ];
     }
+
     SetEnum(_enum, key, value) {
-        let enums = this._enums;
+        let enums = {
+            ...this._enums
+        };
 
         enums[ _enum ][ key ] = value;
         this._enums = Object.freeze(enums);
@@ -36,7 +49,9 @@ class EventManager extends Manager {
         return this;
     }
     SetAction(key, value) {
-        let actions = this._actions;
+        let actions = {
+            ...this._actions
+        };
 
         actions[ key ] = value;
         this._actions = Object.freeze(actions);
@@ -44,10 +59,27 @@ class EventManager extends Manager {
         return this;
     }
     SetReducer(key, value) {
-        let reducers = this._reducers;
+        let reducers = {
+            ...this._reducers
+        };
 
         reducers[ key ] = value;
         this._reducers = Object.freeze(reducers);
+
+        return this;
+    }
+
+    AddActions(arr) {
+        arr.forEach(entry => {
+            this.SetAction(entry[0], entry[1]);
+        });
+
+        return this;
+    }
+    AddReducers(arr) {
+        arr.forEach(entry => {
+            this.SetReducer(entry[0], entry[1]);
+        });
 
         return this;
     }
@@ -67,14 +99,20 @@ class EventManager extends Manager {
         return this;
     }
     
-    Dispatch(action) {
-        if(typeof action === "string" || action instanceof String) {
-            action = this.GetAction(action);
+    Dispatch(action, ...args) {
+        let message = {};
+        if(typeof action === "object") {
+            message = action;
+        } else if(typeof action === "string" || action instanceof String) {
+            message = (this.GetAction(action))(...args);
         }
 
-        this._reducers.forEach(reducer => {
-            reducer(action);
-        });
+        message = EventManager.ExtractMessage(action);
+        for(let key in this._reducers) {
+            let reducer = this._reducers[ key ];
+
+            reducer(message);
+        }
     }
 
     Handle(...args) {
@@ -106,6 +144,14 @@ class EventManager extends Manager {
                 meta
             }
         });
+    }
+
+    static ExtractMessage(message) {
+        if(message.type === EventManager.GetInstance()._enums.EventType.DOM_EVENT || message.type === EventManager.GetInstance()._enums.EventType.CUSTOM_EVENT) {
+            return message.data;
+        }
+
+        return message;
     }
 
 	static GetInstance() {
