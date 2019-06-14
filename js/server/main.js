@@ -32,7 +32,7 @@ app.get("/validate", (req, res) => {
     res.set("Content-Type", "Application/json");
     
     res.send(JSON.stringify({
-        cat: "meow"
+        timestamp: Date.now()
     }));
 });
 

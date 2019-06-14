@@ -1,5 +1,6 @@
 import uuidv4 from "uuid/v4";
 import Manager from "./Manager";
+import StateManager from "./StateManager";
 
 const ENDPOINT = "events";
 
@@ -125,12 +126,19 @@ class EventManager extends Manager {
         }
         
         for(let key in this._reducers) {
-            let reducer = this._reducers[ key ];
+            let reducer = this._reducers[ key ],
+                state = {};
 
-            reducer(message);
+            if(key.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
+                state = reducer(message) || {};
+            } else {
+                state[ key ] = reducer(message) || {};
+            }
+
+            StateManager.GetInstance().AddState(state);
         }
-        //  TODO: Make this reducer call update its relevant state
-        //! Probably make this internal and pass the caller for this._uuid
+
+        // StateManager.GetInstance().Sync();
     }
 
     Handle(...args) {

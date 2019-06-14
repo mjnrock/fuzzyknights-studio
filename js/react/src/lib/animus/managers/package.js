@@ -7,7 +7,7 @@ export function Init() {
 	try {
 		new StateManager();
 		new RegistryManager();
-		new EventManager();
+        new EventManager();
 	
 		return true;
 	} catch(e) {

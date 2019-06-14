@@ -7,7 +7,7 @@ class StateManager extends Manager {
 		super(ENDPOINT, "GetState", "SetState");
 
 		this._state = Object.freeze({});
-		this.LocalToGlobal(this._state);
+        this.LocalToGlobal(this._state);
 	}
 
 	GetState() {
@@ -15,7 +15,8 @@ class StateManager extends Manager {
 	}
 	async SetState(state = {}) {
 		this._state = Object.freeze({
-			...await state
+			...await state,
+            lastUpdate: Date.now()
 		});
 
 		return this;
@@ -23,11 +24,22 @@ class StateManager extends Manager {
 	async AddState(state = {}) {
 		this._state = Object.freeze({
 			...this.GetState(),
-			...await state
-		});
+			...await state,
+            lastUpdate: Date.now()
+        });
+        
+        this.Sync();
 
 		return this;
-	}
+    }
+    
+    Sync() {
+        if(this._state.lastUpdate < Manager._scope()[ Manager._processEndpoint(ENDPOINT) ].lastUpdate) {
+            this.GlobalToLocal();
+        } else {
+            this.LocalToGlobal();
+        }
+    }
 
 	static GetInstance() {
 		return Manager._scope().managers[ Manager._processEndpoint(ENDPOINT) ];

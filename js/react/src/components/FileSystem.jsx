@@ -48,6 +48,10 @@ class FileSystem extends SmartComponent {
                     onClick={
                         () => this.AsyncDispatch("urlFetch", "http://localhost:3087/validate")
                     }>TEST BUTTON</button>
+                <button className="button success" 
+                    onClick={
+                        () => console.log(this.State())
+                    }>TEST BUTTON</button>
 
                 <canvas
                     id="image-overview"

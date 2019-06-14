@@ -15,26 +15,27 @@ class Manager {
 		 */
 		this._sync = {
 			endpoint,
-			getter: this[ getter ],
-			setter: this[ setter ]
+			getter,
+			setter
         };
         this._hooks = {};
 
 		Manager._scope().managers = Manager._scope().managers || {};
 		Manager._scope().managers[ this._sync.endpoint ] = this;
+		Manager._scope()[ this._sync.endpoint ] = {};
 	}
 
 	LocalToGlobal(value = null) {
 		if(value === null || value === void 0) {
-			Manager._scope()[ this._sync.endpoint ] = this._sync.getter();
+			Manager._scope()[ this._sync.endpoint ] = this[ this._sync.getter ]();
 		} else {
 			Manager._scope()[ this._sync.endpoint ] = value;
-		}
+        }
 
 		return this;
 	}
 	GlobalToLocal() {
-		this._sync.setter(Manager._scope()[ this._sync.endpoint ]);
+		this[ this._sync.setter ](Manager._scope()[ this._sync.endpoint ]);
 
 		return this;
     }
