@@ -44,10 +44,10 @@ class FileSystem extends SmartComponent {
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
-                <button className="button info outline" 
+                <button className="button alert" 
                     onClick={
-                        () => console.log(this.Dispatch("test-1", 1231648948656165))
-                    }>Get State</button>
+                        () => this.AsyncDispatch("urlFetch", "http://localhost:3087/validate")
+                    }>TEST BUTTON</button>
 
                 <canvas
                     id="image-overview"

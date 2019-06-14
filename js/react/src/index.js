@@ -10,19 +10,20 @@ Animus.Managers.Init();
 // console.log(Animus.Managers.StateManager.GetInstance());
 
 Animus.Managers.EventManager.GetInstance().AddActions([
-    [ "test-1", (data) => ({
-        data
+    [ "urlFetch", (type, data) => ({
+        type,
+        ...data
     }) ]
 ]);
 Animus.Managers.EventManager.GetInstance().AddReducers([
-    [ "reducer-1", (message) => {
+    (message) => {
         console.info("reducer-1", message);
-    } ],
-    [ "reducer-2", (message) => {
+    },
+    (message) => {
         console.info("reducer-2", message);
-    } ]
+    }
 ]);
-Animus.Managers.EventManager.GetInstance().Dispatch("test-1", 1231648948656165);
+// Animus.Managers.EventManager.GetInstance().Dispatch("test-1", 1231648948656165);
 
 ReactDOM.render(
     <App />,

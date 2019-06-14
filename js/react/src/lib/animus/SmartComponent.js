@@ -41,6 +41,9 @@ class SmartComponent extends Component {
     Dispatch(action, ...args) {
         this.Manager("events").Dispatch(action, ...args);
     }
+    AsyncDispatch(action, url) {
+        this.Manager("events").AsyncDispatch(action, url);
+    }
 }
 
 export default SmartComponent;

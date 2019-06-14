@@ -1,3 +1,4 @@
+import uuidv4 from "uuid/v4";
 import Manager from "./Manager";
 
 const ENDPOINT = "events";
@@ -62,8 +63,12 @@ class EventManager extends Manager {
         let reducers = {
             ...this._reducers
         };
-
-        reducers[ key ] = value;
+        
+        if(arguments.length === 1 && typeof key === "function") {
+            reducers[ uuidv4() ] = value;
+        } else {
+            reducers[ key ] = value;
+        }
         this._reducers = Object.freeze(reducers);
 
         return this;
@@ -78,7 +83,11 @@ class EventManager extends Manager {
     }
     AddReducers(arr) {
         arr.forEach(entry => {
-            this.SetReducer(entry[0], entry[1]);
+            if(Array.isArray(entry)) {
+                this.SetReducer(entry[0], entry[1]);
+            } else if(typeof entry === "function") {
+                this.SetReducer(uuidv4(), entry);
+            }
         });
 
         return this;
@@ -99,20 +108,29 @@ class EventManager extends Manager {
         return this;
     }
     
-    Dispatch(action, ...args) {
-        let message = {};
-        if(typeof action === "object") {
-            message = action;
-        } else if(typeof action === "string" || action instanceof String) {
-            message = (this.GetAction(action))(...args);
-        }
+    async AsyncDispatch(action, url) {
+        fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            this.Dispatch(action, data);
+        });
+    }
 
-        message = EventManager.ExtractMessage(action);
+    Dispatch(typeOrMessage, ...args) {        
+        let message = {};
+        if(arguments.length === 1) {
+            message = typeOrMessage;
+        } else if(typeof typeOrMessage === "string" || typeOrMessage instanceof String) {
+            message = (this.GetAction(typeOrMessage))(typeOrMessage, ...args);
+        }
+        
         for(let key in this._reducers) {
             let reducer = this._reducers[ key ];
 
             reducer(message);
         }
+        //  TODO: Make this reducer call update its relevant state
+        //! Probably make this internal and pass the caller for this._uuid
     }
 
     Handle(...args) {
