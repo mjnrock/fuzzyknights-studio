@@ -14,20 +14,20 @@ console.log(Animus);
 Animus.Managers.EventManager.GetInstance().AddActions([
     [ "urlFetch", (type, data) => ({
         type,
-        ...data
+        data
     }) ]
 ]);
 Animus.Managers.EventManager.GetInstance().AddReducers([
     (message) => {
-        console.info("reducer-1", message);
+        console.info("reducer-1");
 
-        return message;
+        return message.data;
     },
-    (message) => {
-        console.info("reducer-2", message);
+    [ "reducer_scope", (message) => {
+        console.info("reducer-2");
 
-        return message;
-    }
+        return message.data;
+    } ]
 ]);
 // Animus.Managers.EventManager.GetInstance().Dispatch("test-1", 1231648948656165);
 

@@ -130,15 +130,16 @@ class EventManager extends Manager {
                 state = {};
 
             if(key.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
-                state = reducer(message) || {};
+                state = reducer(message);
             } else {
-                state[ key ] = reducer(message) || {};
+                state[ key ] = reducer(message);
             }
 
-            StateManager.GetInstance().AddState(state);
+            console.log(key, state);
+            StateManager.GetInstance().AddState(state, false);
         }
 
-        // StateManager.GetInstance().Sync();
+        StateManager.GetInstance().Sync();
     }
 
     Handle(...args) {
