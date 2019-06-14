@@ -1,22 +1,9 @@
-import Manager from "./Manager";
-import StateManager from "./StateManager";
-import SubscriptionManager from "./SubscriptionManager";
+import Managers from "./managers/package";
 
-export function Init() {
-	try {
-		new StateManager();
-		new SubscriptionManager();
-	
-		return true;
-	} catch(e) {
-		return false;
-	}
-}
+import SmartComponent from "./SmartComponent";
 
 export default {
-	Init,
-	
-	Manager,
-	StateManager,
-	SubscriptionManager
+    Managers,
+    
+	SmartComponent
 };

@@ -17,7 +17,8 @@ class Manager {
 			endpoint,
 			getter: this[ getter ],
 			setter: this[ setter ]
-		};
+        };
+        this._hooks = {};
 
 		Manager._scope().managers = Manager._scope().managers || {};
 		Manager._scope().managers[ this._sync.endpoint ] = this;
@@ -36,7 +37,38 @@ class Manager {
 		this._sync.setter(Manager._scope()[ this._sync.endpoint ]);
 
 		return this;
-	}
+    }
+    
+    _hook(key, ...args) {        
+        if(this._hooks[ key ] && typeof this._hooks[ key ] === "function") {
+            return this._hooks[ key ](...args);
+        }
+
+        return false;
+    }
+
+    static AddHook(endpoint, key, fn) {
+        try {
+            let manager = Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
+
+            if(manager && typeof fn === "function") {
+                manager._hooks[ key ] = fn;
+            }
+        } catch(e) {
+            console.warn("[Failure]: Could not add hook");
+        }
+    }
+    static RemoveHook(endpoint, key) {
+        try {
+            let manager = Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
+
+            if(manager) {
+                delete manager._hooks[ key ];
+            }
+        } catch(e) {
+            console.warn("[Failure]: Could not remove hook");
+        }
+    }
 
 	//! All scope is derived from the use of this function for a one-location update
 	//? Overwrite this function "{Root}.Manager._scope = () => ..." to change
@@ -50,7 +82,7 @@ class Manager {
 	static _processEndpoint(endpoint) {
 		//	TODO Allow for endpoint to be dot-notation
 		return endpoint;
-	}
+    }
 }
 
 export default Manager;

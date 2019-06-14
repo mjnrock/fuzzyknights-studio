@@ -10,7 +10,7 @@ class SpriteUpload extends Component {
                 <button className="button info outline" onClick={ () => console.log(window._fks) }>State</button>
 
                 <FileSystem fksid={ 1 } />
-                <FileSystem fksid={ 2 } />
+                {/* <FileSystem fksid={ 2 } /> */}
                 <br />
                 <Tessellation />
             </div>

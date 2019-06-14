@@ -10,7 +10,7 @@ class Tessellation extends Component {
     }
 
     onChange(e) {
-        this.props.SetAttribute(e.target.name, e.target.value);
+        // this.props.SetAttribute(e.target.name, e.target.value);
 
         let canvas = document.getElementById("image-overview"),
             ctx = canvas.getContext("2d");

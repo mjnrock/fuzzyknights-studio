@@ -4,10 +4,10 @@ import ReactDOM from "react-dom";
 import App from "./App";
 
 import Animus from "./lib/animus/package";
-Animus.Init();
+Animus.Managers.Init();
 
-console.log(Animus.Manager._scope());
-console.log(Animus.StateManager.GetInstance());
+console.log(Animus.Managers.Manager._scope());
+console.log(Animus.Managers.StateManager.GetInstance());
 
 ReactDOM.render(
     <App />,
