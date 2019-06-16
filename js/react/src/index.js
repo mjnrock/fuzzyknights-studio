@@ -8,33 +8,35 @@ Animus.Managers.Init();
 
 console.log(Animus);
 
-// console.log(Animus.Managers.Manager._scope());
-// console.log(Animus.Managers.StateManager.GetInstance());
-
+Animus.Managers.EventManager.GetInstance().AddEnums([
+    [ "Tessellation", {
+		UPDATE_ATTRIBUTE: "XXX_UPDATE_ATTRIBUTE"
+	}]
+]);
 Animus.Managers.EventManager.GetInstance().AddActions([
-    [ "urlFetch", (type, data) => ({
+    [ Animus.Managers.EventManager.GetInstance().GetEnumValue("Tessellation", "UPDATE_ATTRIBUTE"), (type, key, value) => ({
         type,
-        data
+        data: {
+			key,
+			value
+		}
     }) ]
 ]);
 Animus.Managers.EventManager.GetInstance().AddReducers([
-    (state = {}, message) => {
-		if(message.type === "urlFetch") {
-			console.info("reducer-1");
-
-			return message.data;
-		}
-		
-		return state;
-    },
-    [ "reducer_scope", (state = {}, message) => {
-		if(message.type === "urlFetch2") {
-			console.info("reducer-2");
-
-			return message.data;
+    [ "Tessellation", (state = {}, message, [ enums, actions ]) => {
+		if(message.type === enums.Tessellation.UPDATE_ATTRIBUTE) {
+			return {
+				...state,
+				[ message.data.key ]: `${ message.data.value }`
+			};
 		}
 
-		return message.data || state;
+		return {
+			"tile-height": 128,
+			"tile-width": 128,
+			"tile-offset-x": "0",	// React is stupid and treats 0 as empty -> Making a string resolves this
+			"tile-offset-y": "0"
+		};
     } ]
 ]);
 // Animus.Managers.EventManager.GetInstance().Dispatch("test-1", 1231648948656165);

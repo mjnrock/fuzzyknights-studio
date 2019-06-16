@@ -73,7 +73,24 @@ class SmartComponent extends Component {
         } else if(arguments.length === 2 && set === true) {
             return this.Manager("state").SetState(state);
         }
-    }
+	}
+	Enum(_enum, key) {
+		if(arguments.length === 1) {
+			if(_enum.includes(".")) {
+				let path = _enum.split(".");
+
+				if(path.length === 2) {
+					return this.Manager("events").GetEnumValue(...path);
+				}
+
+				return this.Manager("events").GetEnum(path[0] || _enum);
+			}
+
+			return this.Manager("events").GetEnum(_enum);
+		} else if(arguments.length === 2) {
+			return this.Manager("events").GetEnumValue(_enum, key);
+		}
+	}
     Action(key, value) {
         if(arguments.length === 0) {
             return this.Manager("events").GetActions();

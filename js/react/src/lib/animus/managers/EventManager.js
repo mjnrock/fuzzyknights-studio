@@ -30,7 +30,10 @@ class EventManager extends Manager {
         return this._reducers;
     }
 
-    GetEnum(_enum, key) {
+    GetEnum(_enum) {
+        return this._enums[ _enum ];
+    }
+    GetEnumValue(_enum, key) {
         return this._enums[ _enum ][ key ];
     }
     GetAction(key) {
@@ -40,12 +43,12 @@ class EventManager extends Manager {
         return this._reducers[ key ];
     }
 
-    SetEnum(_enum, key, value) {
+    SetEnum(_enum, obj) {
         let enums = {
             ...this._enums
         };
 
-        enums[ _enum ][ key ] = value;
+        enums[ _enum ] = obj;
         this._enums = Object.freeze(enums);
 
         return this;
@@ -75,7 +78,15 @@ class EventManager extends Manager {
         return this;
     }
 
+    AddEnums(arr) {
+        arr.forEach(entry => {
+            this.SetEnum(entry[0], entry[1], entry[2]);
+        });
+
+        return this;
+    }
     AddActions(arr) {
+		console.log(arr);
         arr.forEach(entry => {
             this.SetAction(entry[0], entry[1]);
         });
@@ -128,18 +139,16 @@ class EventManager extends Manager {
         if(arguments.length === 1 && (typeOrMessage !== null && typeOrMessage !== void 0)) {
             message = typeOrMessage;
         } else if(typeof typeOrMessage === "string" || typeOrMessage instanceof String) {
-            message = (this.GetAction(typeOrMessage))(typeOrMessage, ...args);
+			if(typeof this.GetAction(typeOrMessage) === "function") {
+				message = (this.GetAction(typeOrMessage))(typeOrMessage, ...args);
+			}
         }
         
         for(let key in this._reducers) {
             let reducer = this._reducers[ key ],
-                state = {};
-
-            if(key.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
-                state = reducer(state, message);
-            } else {
-                state[ key ] = reducer(state[ key ], message);
-			}
+				state = StateManager.GetInstance().GetState()[ key ] || {};
+				
+			state = reducer(state, message, [ this._enums, this._actions ]);
 			
 			this._Hook("Animus:EventManager:Dispatch::reducer", state, false);
         }

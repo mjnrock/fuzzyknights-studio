@@ -31,12 +31,13 @@ class FileSystem extends SmartComponent {
 	}
 
     render() {
+		console.log(this.Enum("Tessellation", "UPDATE_ATTRIBUTE"));
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.Manager()) }>this.Manager()</button>
                 <button className="button alert" 
                     onClick={
-                        () => this.AsyncDispatch("urlFetch", "http://localhost:3075/validate")
+                        () => this.AsyncDispatch(this.Enum("Tessellation.UPDATE_ATTRIBUTE"), "http://localhost:3075/validate")
                     }>AsyncDispatch</button>
                 <button className="button success" 
                     onClick={
@@ -51,15 +52,19 @@ class FileSystem extends SmartComponent {
 				<div>
 					{ this.SafeState("", { stringifyObjs: true }) }
 				</div>
-				{/* <p>----3---</p>
+				<p>----3---</p>
 				<div>
 					{ this.SafeState("api_child_test", {
 						iterator: (item, [ state, key, value ]) => {
+							if(typeof value === "object") {
+								return null;
+							}
+
 							return <p key={ key }>{ value }<strong> [ { key } ]</strong></p>;
 						}
 					}) }
 				</div>
-				<p>----4---</p> */}
+				<p>----4---</p>
 
                 <canvas
                     id="image-overview"
