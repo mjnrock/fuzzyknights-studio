@@ -20,10 +20,7 @@ class FileSystem extends SmartComponent {
 
 				ctx.drawImage(img, 0, 0);
 				
-				//? Canvas getImageData chokes too hard, save reference instead of array data
-				this.State({
-					image: img
-				});
+				this.Dispatch(this.Enum("FileSystem", "LOAD_FILE"), e.target.result, img.width, img.height);
             };
             img.src = e.target.result;
         }
@@ -31,7 +28,6 @@ class FileSystem extends SmartComponent {
 	}
 
     render() {
-		console.log(this.Enum("Tessellation", "UPDATE_ATTRIBUTE"));
         return (
             <div className="container">
                 <button className="button info outline" onClick={ () => console.log(this.Manager()) }>this.Manager()</button>
@@ -44,32 +40,13 @@ class FileSystem extends SmartComponent {
                         () => console.log(this.State())
                     }>this.State</button>
 
-				<p>----1---</p>
-				<div>
-					{ this.SafeState("") }
-				</div>
-				<p>----2---</p>
-				<div>
-					{ this.SafeState("", { stringifyObjs: true }) }
-				</div>
-				<p>----3---</p>
-				<div>
-					{ this.SafeState("api_child_test", {
-						iterator: (item, [ state, key, value ]) => {
-							if(typeof value === "object") {
-								return null;
-							}
-
-							return <p key={ key }>{ value }<strong> [ { key } ]</strong></p>;
-						}
-					}) }
-				</div>
-				<p>----4---</p>
-
                 <canvas
                     id="image-overview"
                     height="500"
-                    width="500"
+					width="500"
+					style={{
+						border: "1px solid #FF0000"
+					}}
                 />
                 <input
                     id="load-image"

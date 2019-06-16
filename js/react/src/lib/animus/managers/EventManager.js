@@ -146,9 +146,11 @@ class EventManager extends Manager {
         
         for(let key in this._reducers) {
             let reducer = this._reducers[ key ],
-				state = StateManager.GetInstance().GetState()[ key ] || {};
+				state = {
+					...StateManager.GetInstance().GetState()
+				};
 				
-			state = reducer(state, message, [ this._enums, this._actions ]);
+			state[ key ] = reducer(state[ key ], message, [ this._enums, this._actions, state ]);
 			
 			this._Hook("Animus:EventManager:Dispatch::reducer", state, false);
         }
