@@ -63,15 +63,21 @@ class EventManager extends Manager {
 
         return this;
     }
-    SetReducer(key, value) {
+    SetReducer(key, value, defaultState = {}) {
         let reducers = {
             ...this._reducers
         };
         
         if(arguments.length === 1 && typeof key === "function") {
-            reducers[ uuidv4() ] = value;
+            reducers[ uuidv4() ] = {
+				fn: value,
+				defaultState
+			};
         } else {
-            reducers[ key ] = value;
+            reducers[ key ] = {
+				fn: value,
+				defaultState
+			};
         }
         this._reducers = Object.freeze(reducers);
 
@@ -96,7 +102,7 @@ class EventManager extends Manager {
     AddReducers(arr) {
         arr.forEach(entry => {
             if(Array.isArray(entry)) {
-                this.SetReducer(entry[0], entry[1]);
+                this.SetReducer(entry[0], entry[1], entry[2] || {});
             } else if(typeof entry === "function") {
                 this.SetReducer(uuidv4(), entry);
             }
@@ -145,12 +151,14 @@ class EventManager extends Manager {
         }
         
         for(let key in this._reducers) {
-            let reducer = this._reducers[ key ],
+			let reducer = this._reducers[ key ].fn,
+				defaultState = this._reducers[ key ].defaultState,
 				state = {
 					...StateManager.GetInstance().GetState()
 				};
 				
-			state[ key ] = reducer(state[ key ], message, [ this._enums, this._actions, state ]);
+			let result = reducer(state[ key ], message, [ this._enums, this._actions, state ]);
+			state[ key ] = Object.getOwnPropertyNames(result).length === 0 ? defaultState : result;
 			
 			this._Hook("Animus:EventManager:Dispatch::reducer", state, false);
         }
