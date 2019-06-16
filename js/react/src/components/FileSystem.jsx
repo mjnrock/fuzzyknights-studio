@@ -3,8 +3,8 @@ import React from "react";
 import SmartComponent from "./../lib/animus/SmartComponent";
 
 class FileSystem extends SmartComponent {
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
     }
 
     async onFileUpload(e) {
@@ -30,7 +30,7 @@ class FileSystem extends SmartComponent {
             img.src = e.target.result;
         }
         reader.readAsDataURL(file);
-    }
+	}
 
     render() {
         return (
@@ -44,22 +44,32 @@ class FileSystem extends SmartComponent {
                     onClick={
                         () => console.log(this.State())
                     }>TEST BUTTON</button>
+                <button className="button info"
+                    onClick={
+                        () => console.log(this.props)
+                    }>TEST BUTTON</button>
 
 				<p>-------</p>
 				<div>
-					{ this.SafeState("") }
+					{ this.SafeState("api_test") }
 				</div>
 				<p>-------</p>
 				<div>
-					{ this.SafeState("", { stringifyObjs: true }) }
+					{ this.SafeState("api_test", { stringifyObjs: true }) }
 				</div>
 				<p>-------</p>
 				<div>
 					{ this.SafeState("api_child_test", {
-						iterator: (s, state, key, value) => {
+						iterator: (item, [ state, key, value ]) => {
 							return <p key={ key }>{ value }<strong> [ { key } ]</strong></p>;
 						}
 					}) }
+				</div>
+				<p>-------</p>
+				<div>
+					{
+						this.repo("api_test")
+					}
 				</div>
 				<p>-------</p>
 

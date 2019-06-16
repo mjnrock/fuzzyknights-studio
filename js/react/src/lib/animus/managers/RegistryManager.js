@@ -56,7 +56,7 @@ class RegistryManager extends Manager {
 		for(let uuid in this._registry) {
 			let entity = this._registry[ uuid ];
 			
-			this._Hook("Animus:RegistryManager:UpdateEach", entity);
+			this._Hook("Animus:RegistryManager:UpdateEach", entity, uuid);
 		}
 	}
 

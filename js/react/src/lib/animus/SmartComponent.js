@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import uuidv4 from "uuid/v4";
 
 import Manager from "./managers/Manager";
@@ -11,8 +11,9 @@ class SmartComponent extends Component {
 
 		this._uuid = uuidv4();
         this._observer$ = new Observable();
+		this.state = {};
 	}
-	
+		
 	componentWillMount() {
 		RegistryManager.GetInstance().Register(this);
 	}
@@ -28,9 +29,22 @@ class SmartComponent extends Component {
 		return Manager._scope().managers;
 	}
 	
-	SafeState(path, { stringifyObjs = false, iterator = null } = {}) {
-		let state = this.Manager("state").GetState(),
-			pathArr = path.split(".");
+	repo(path, { stringifyObjs = false, iterator = null } = {}) {
+		if(Object.getOwnPropertyNames(this.state).length !== 0) {
+			return this.SafeState(path, {
+				stringifyObjs,
+				iterator,
+				state: this.state
+			});
+		}
+
+		return null;
+	}
+	SafeState(path, { stringifyObjs = false, iterator = null, state = {} } = {}) {
+		if(Object.getOwnPropertyNames(state).length === 0 || state === null || state === void 0) {
+			state = this.Manager("state").GetState();
+		}
+		let pathArr = path.split(".");
 
 		pathArr.forEach(tier => {
 			if(state[ tier ]) {
@@ -42,9 +56,11 @@ class SmartComponent extends Component {
 
 		if(iterator && typeof iterator === "function") {
 			if(Array.isArray(state)) {
-				return state.map((s, i) => iterator(s, state, i));
+				return state.map((s, i) => iterator(s, [ state, i ]));
 			} else if(typeof state === "object") {
-				return Object.entries(state).map(s => iterator(s, state, s[0], s[1]));
+				return Object.entries(state).map(s => iterator(s, [ state, s[0], s[1] ]));
+			} else {
+				return iterator(state);
 			}
 		}
 
