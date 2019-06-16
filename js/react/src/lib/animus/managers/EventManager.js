@@ -92,7 +92,6 @@ class EventManager extends Manager {
         return this;
     }
     AddActions(arr) {
-		console.log(arr);
         arr.forEach(entry => {
             this.SetAction(entry[0], entry[1]);
         });
