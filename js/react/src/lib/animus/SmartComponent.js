@@ -4,6 +4,7 @@ import uuidv4 from "uuid/v4";
 import Manager from "./managers/Manager";
 import RegistryManager from "./managers/RegistryManager";
 import Observable from "./Observable";
+import EventManager from "./managers/EventManager";
 
 class SmartComponent extends Component {
     constructor(props) {
@@ -29,22 +30,9 @@ class SmartComponent extends Component {
 		return Manager._scope().managers;
 	}
 	
-	repo(path, { stringifyObjs = false, iterator = null } = {}) {
-		if(Object.getOwnPropertyNames(this.state).length !== 0) {
-			return this.SafeState(path, {
-				stringifyObjs,
-				iterator,
-				state: this.state
-			});
-		}
-
-		return null;
-	}
-	SafeState(path, { stringifyObjs = false, iterator = null, state = {} } = {}) {
-		if(Object.getOwnPropertyNames(state).length === 0 || state === null || state === void 0) {
-			state = this.Manager("state").GetState();
-		}
-		let pathArr = path.split(".");
+	SafeState(path, { stringifyObjs = false, iterator = null } = {}) {
+		let state = this.Manager("state").GetState(),
+			pathArr = path.split(".");
 
 		pathArr.forEach(tier => {
 			if(state[ tier ]) {
@@ -75,10 +63,14 @@ class SmartComponent extends Component {
 		return state;
 	}
 
-    State(state) {
+    State(state, set = false) {
         if(arguments.length === 0) {
             return this.Manager("state").GetState();
         } else if(arguments.length === 1) {
+            return this.Manager("state").AddState(state);
+        } else if(arguments.length === 2 && set === false) {
+            return this.Manager("state").AddState(state);
+        } else if(arguments.length === 2 && set === true) {
             return this.Manager("state").SetState(state);
         }
     }

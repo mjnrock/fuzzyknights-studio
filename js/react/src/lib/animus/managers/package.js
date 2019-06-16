@@ -3,8 +3,6 @@ import StateManager from "./StateManager";
 import RegistryManager from "./RegistryManager";
 import EventManager from "./EventManager";
 
-import SmartComponent from "./../SmartComponent";
-
 export function Init() {
 	try {
 		new StateManager();
@@ -15,14 +13,16 @@ export function Init() {
 			RegistryManager.GetInstance().UpdateEach();
 		});
 		RegistryManager.AddHook("Animus:RegistryManager:UpdateEach", (entity, uuid) => {
-			if(entity.setState) {
-				entity.setState(StateManager.GetInstance().GetState());
+			// if(entity.setState) {
+			// 	entity.setState(StateManager.GetInstance().GetState());
+			// }
+			if(entity.forceUpdate) {
+				entity.forceUpdate();
 			}
-			// entity.forceUpdate();
 		});
 
 		EventManager.AddHook("Animus:EventManager:Dispatch::reducer", (state, doSync) => {
-			StateManager.GetInstance().AddState(state, false);
+			StateManager.GetInstance().AddState(state, doSync);
 		});
 		EventManager.AddHook("Animus:EventManager:Dispatch", () => {
 			StateManager.GetInstance().Sync();

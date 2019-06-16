@@ -109,17 +109,23 @@ class EventManager extends Manager {
         return this;
     }
     
-    async AsyncDispatch(action, url) {
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            this.Dispatch(action, data);
-        });
+    AsyncDispatch(action, url) {
+		if(typeof url === "string" || url instanceof String) {
+			fetch(url)
+			.then(response => response.json())
+			.then(data => {
+				this.Dispatch(action, data);
+			});
+		} else {
+			this.Dispatch(action);
+		}
     }
 
-    Dispatch(typeOrMessage, ...args) {        
-        let message = {};
-        if(arguments.length === 1) {
+    Dispatch(typeOrMessage, ...args) {
+        let message = {
+			type: null
+		};
+        if(arguments.length === 1 && (typeOrMessage !== null && typeOrMessage !== void 0)) {
             message = typeOrMessage;
         } else if(typeof typeOrMessage === "string" || typeOrMessage instanceof String) {
             message = (this.GetAction(typeOrMessage))(typeOrMessage, ...args);

@@ -7,25 +7,23 @@ class FileSystem extends SmartComponent {
         super(props);
     }
 
-    async onFileUpload(e) {
+    onFileUpload(e) {
         let file = e.target.files[0],
             reader = new FileReader();
         
-        reader.onload = async (e) => {
+        reader.onload = (e) => {
             let img = new Image();
 
-            img.onload = async () => {
-                let height = img.height;
-                let width = img.width;
-
+            img.onload = () => {
                 let canvas = document.getElementById("image-overview"),
                     ctx = canvas.getContext("2d");
 
-                ctx.drawImage(img, 0, 0);
-
-                // this.addLocalState({
-                //     "image-data": await (await ctx.getImageData(0, 0, width, height)).data
-                // }, (state) => console.log(JSON.stringify(state)));
+				ctx.drawImage(img, 0, 0);
+				
+				//? Canvas getImageData chokes too hard, save reference instead of array data
+				this.State({
+					image: img
+				});
             };
             img.src = e.target.result;
         }
@@ -35,29 +33,25 @@ class FileSystem extends SmartComponent {
     render() {
         return (
             <div className="container">
-                <button className="button info outline" onClick={ () => console.log(this.Manager()) }>(File System) State</button>
+                <button className="button info outline" onClick={ () => console.log(this.Manager()) }>this.Manager()</button>
                 <button className="button alert" 
                     onClick={
                         () => this.AsyncDispatch("urlFetch", "http://localhost:3075/validate")
-                    }>TEST BUTTON</button>
+                    }>AsyncDispatch</button>
                 <button className="button success" 
                     onClick={
                         () => console.log(this.State())
-                    }>TEST BUTTON</button>
-                <button className="button info"
-                    onClick={
-                        () => console.log(this.props)
-                    }>TEST BUTTON</button>
+                    }>this.State</button>
 
-				<p>-------</p>
+				<p>----1---</p>
 				<div>
-					{ this.SafeState("api_test") }
+					{ this.SafeState("") }
 				</div>
-				<p>-------</p>
+				<p>----2---</p>
 				<div>
-					{ this.SafeState("api_test", { stringifyObjs: true }) }
+					{ this.SafeState("", { stringifyObjs: true }) }
 				</div>
-				<p>-------</p>
+				{/* <p>----3---</p>
 				<div>
 					{ this.SafeState("api_child_test", {
 						iterator: (item, [ state, key, value ]) => {
@@ -65,13 +59,7 @@ class FileSystem extends SmartComponent {
 						}
 					}) }
 				</div>
-				<p>-------</p>
-				<div>
-					{
-						this.repo("api_test")
-					}
-				</div>
-				<p>-------</p>
+				<p>----4---</p> */}
 
                 <canvas
                     id="image-overview"
