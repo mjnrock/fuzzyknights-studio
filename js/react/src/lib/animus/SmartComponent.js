@@ -26,7 +26,38 @@ class SmartComponent extends Component {
 		}
 
 		return Manager._scope().managers;
-    }
+	}
+	
+	SafeState(path, { stringifyObjs = false, iterator = null } = {}) {
+		let state = this.Manager("state").GetState(),
+			pathArr = path.split(".");
+
+		pathArr.forEach(tier => {
+			if(state[ tier ]) {
+				state = state[ tier ];
+			} else {
+				return null;
+			}
+		});
+
+		if(iterator && typeof iterator === "function") {
+			if(Array.isArray(state)) {
+				return state.map((s, i) => iterator(s, state, i));
+			} else if(typeof state === "object") {
+				return Object.entries(state).map(s => iterator(s, state, s[0], s[1]));
+			}
+		}
+
+		if(typeof state === "object") {
+			if(stringifyObjs) {
+				return JSON.stringify(state);
+			}
+
+			return null;
+		}
+
+		return state;
+	}
 
     State(state) {
         if(arguments.length === 0) {

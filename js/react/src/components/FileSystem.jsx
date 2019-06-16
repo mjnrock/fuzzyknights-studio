@@ -46,9 +46,21 @@ class FileSystem extends SmartComponent {
                     }>TEST BUTTON</button>
 
 				<p>-------</p>
-				<p>
-					{ this.State().api_test }
-				</p>
+				<div>
+					{ this.SafeState("") }
+				</div>
+				<p>-------</p>
+				<div>
+					{ this.SafeState("", { stringifyObjs: true }) }
+				</div>
+				<p>-------</p>
+				<div>
+					{ this.SafeState("api_child_test", {
+						iterator: (s, state, key, value) => {
+							return <p key={ key }>{ value }<strong> [ { key } ]</strong></p>;
+						}
+					}) }
+				</div>
 				<p>-------</p>
 
                 <canvas

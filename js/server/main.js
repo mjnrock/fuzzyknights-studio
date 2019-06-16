@@ -32,7 +32,12 @@ app.get("/validate", (req, res) => {
     res.set("Content-Type", "Application/json");
     
     res.send(JSON.stringify({
-        api_test: Date.now()
+		api_test: Date.now(),
+		api_child_test: {
+			child1: Date.now() + (Math.random() * 1000),
+			child2: Date.now() + (Math.random() * 1000),
+			child3: Date.now() + (Math.random() * 1000)
+		}
     }));
 });
 
