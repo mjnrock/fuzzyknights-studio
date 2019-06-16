@@ -18,15 +18,23 @@ Animus.Managers.EventManager.GetInstance().AddActions([
     }) ]
 ]);
 Animus.Managers.EventManager.GetInstance().AddReducers([
-    (message) => {
-        console.info("reducer-1");
+    (state, message) => {
+		if(message.type === "urlFetch") {
+			console.info("reducer-1");
 
-        return message.data;
+			return message.data;
+		}
+		
+		return state;
     },
-    [ "reducer_scope", (message) => {
-        console.info("reducer-2");
+    [ "reducer_scope", (state, message) => {
+		if(message.type === "urlFetch2") {
+			console.info("reducer-2");
 
-        return message.data;
+			return message.data;
+		}
+
+		return state;
     } ]
 ]);
 // Animus.Managers.EventManager.GetInstance().Dispatch("test-1", 1231648948656165);

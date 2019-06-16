@@ -3,7 +3,7 @@ import uuidv4 from "uuid/v4";
 import WebSocketHelper from "./WebSocketHelper";
 
 window._fks = window._fks || Object.freeze({
-    ws: new WebSocketHelper(`ws://localhost:3087/ws`),
+    ws: new WebSocketHelper(`ws://localhost:3075/ws`),
     subscribers: {},
     state: {},
     localState: {}

@@ -32,26 +32,24 @@ class FileSystem extends SmartComponent {
         reader.readAsDataURL(file);
     }
 
-    componentWillUpdate(props, state) {
-        if(this.hasMessages()) {
-            let msg = this.retrieveMessage();
-
-            console.info(msg);
-        }
-    }
-
     render() {
         return (
             <div className="container">
-                <button className="button info outline" onClick={ () => console.log(this.state) }>(File System) State</button>
+                <button className="button info outline" onClick={ () => console.log(this.Manager()) }>(File System) State</button>
                 <button className="button alert" 
                     onClick={
-                        () => this.AsyncDispatch("urlFetch", "http://localhost:3087/validate")
+                        () => this.AsyncDispatch("urlFetch", "http://localhost:3075/validate")
                     }>TEST BUTTON</button>
                 <button className="button success" 
                     onClick={
                         () => console.log(this.State())
                     }>TEST BUTTON</button>
+
+				<p>-------</p>
+				<p>
+					{ this.State().api_test }
+				</p>
+				<p>-------</p>
 
                 <canvas
                     id="image-overview"

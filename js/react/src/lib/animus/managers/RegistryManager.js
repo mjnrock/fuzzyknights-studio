@@ -50,11 +50,26 @@ class RegistryManager extends Manager {
 		this.SetRegistry(registry);
 
 		return this;
-    }
+	}
+	
+	UpdateEach() {
+		for(let uuid in this._registry) {
+			let entity = this._registry[ uuid ];
+			
+			this._Hook("Animus:RegistryManager:UpdateEach", entity);
+		}
+	}
 
 	static GetInstance() {
 		return Manager._scope().managers[ Manager._processEndpoint(ENDPOINT) ];
 	}
+
+    static AddHook(path, fn) {
+		Manager.AddHook(ENDPOINT, path, fn);
+    }
+    static RemoveHook(path) {
+		Manager.RemoveHook(ENDPOINT, path);
+    }
 }
 
 export default RegistryManager;

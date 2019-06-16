@@ -24,7 +24,9 @@ class StateManager extends Manager {
         
         if(doSync) {
             this.Sync();
-        }
+		}
+
+		this._Hook("Animus:StateManager:SetState", this._state);
 
 		return this;
 	}
@@ -46,6 +48,13 @@ class StateManager extends Manager {
 	static GetInstance() {
 		return Manager._scope().managers[ Manager._processEndpoint(ENDPOINT) ];
 	}
+
+    static AddHook(path, fn) {
+		Manager.AddHook(ENDPOINT, path, fn);
+    }
+    static RemoveHook(path) {
+		Manager.RemoveHook(ENDPOINT, path);
+    }
 }
 
 export default StateManager;

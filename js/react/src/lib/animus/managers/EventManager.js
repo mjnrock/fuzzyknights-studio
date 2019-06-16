@@ -130,16 +130,15 @@ class EventManager extends Manager {
                 state = {};
 
             if(key.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i)) {
-                state = reducer(message);
+                state = reducer(state, message);
             } else {
-                state[ key ] = reducer(message);
-            }
-
-            console.log(key, state);
-            StateManager.GetInstance().AddState(state, false);
+                state[ key ] = reducer(state[ key ], message);
+			}
+			
+			this._Hook("Animus:EventManager:Dispatch::reducer", state, false);
         }
 
-        StateManager.GetInstance().Sync();
+		this._Hook("Animus:EventManager:Dispatch");
     }
 
     Handle(...args) {
@@ -184,6 +183,13 @@ class EventManager extends Manager {
 	static GetInstance() {
 		return Manager._scope().managers[ Manager._processEndpoint(ENDPOINT) ];
 	}
+
+    static AddHook(path, fn) {
+		Manager.AddHook(ENDPOINT, path, fn);
+    }
+    static RemoveHook(path) {
+		Manager.RemoveHook(ENDPOINT, path);
+    }
 }
 
 export default EventManager;

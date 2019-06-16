@@ -7,7 +7,7 @@ const mssql = require("mssql");
 const expressWS = require("express-ws")(express());
 const app = expressWS.app;
 
-const PORT = 3087;
+const PORT = 3075;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,5 +1,5 @@
 class WebSocketHelper {
-	constructor(url = `ws://localhost:3087/ws`) {
+	constructor(url = `ws://localhost:3075/ws`) {
         this.ws = new WebSocket(url);
         
 		this.ws.onopen = (e) => this.OnOpen(e);

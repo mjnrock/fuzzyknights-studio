@@ -1,16 +1,31 @@
 import { Component } from "react";
+import uuidv4 from "uuid/v4";
+
 import Manager from "./managers/Manager";
+import RegistryManager from "./managers/RegistryManager";
 import Observable from "./Observable";
 
 class SmartComponent extends Component {
     constructor(props) {
         super(props);
 
+		this._uuid = uuidv4();
         this._observer$ = new Observable();
-    }
+	}
+	
+	componentWillMount() {
+		RegistryManager.GetInstance().Register(this);
+	}
+	componentWillUnmount() {
+		RegistryManager.GetInstance().Unregister(this);
+	}
 
     Manager(endpoint) {
-		return Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
+		if(arguments.length === 1) {
+			return Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
+		}
+
+		return Manager._scope().managers;
     }
 
     State(state) {

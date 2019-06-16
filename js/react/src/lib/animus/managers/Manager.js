@@ -40,36 +40,41 @@ class Manager {
 		return this;
     }
     
-    // _hook(key, ...args) {        
-    //     if(this._hooks[ key ] && typeof this._hooks[ key ] === "function") {
-    //         return this._hooks[ key ](...args);
-    //     }
+    _Hook(key, ...args) {        
+        if(this._hooks[ key ] && typeof this._hooks[ key ] === "function") {
+            return this._hooks[ key ](key, ...args);
+        }
 
-    //     return false;
-    // }
+        return false;
+	}
 
-    // static AddHook(endpoint, key, fn) {
-    //     try {
-    //         let manager = Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
+    static AddHook(endpoint, key, fn) {
+        try {
+            let manager = Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
 
-    //         if(manager && typeof fn === "function") {
-    //             manager._hooks[ key ] = fn;
-    //         }
-    //     } catch(e) {
-    //         console.warn("[Failure]: Could not add hook");
-    //     }
-    // }
-    // static RemoveHook(endpoint, key) {
-    //     try {
-    //         let manager = Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
+            if(manager && typeof fn === "function") {
+                manager._hooks[ key ] = (k, ...args) => {
+					if(k === key) {
+						fn(...args);
+					}
+				};
+            }
+        } catch(e) {
+			console.warn("[Failure]: Could not add hook");
+			console.info(e);
+        }
+    }
+    static RemoveHook(endpoint, key) {
+        try {
+            let manager = Manager._scope().managers[ Manager._processEndpoint(endpoint) ];
 
-    //         if(manager) {
-    //             delete manager._hooks[ key ];
-    //         }
-    //     } catch(e) {
-    //         console.warn("[Failure]: Could not remove hook");
-    //     }
-    // }
+            if(manager) {
+                delete manager._hooks[ key ];
+            }
+        } catch(e) {
+            console.warn("[Failure]: Could not remove hook");
+        }
+    }
 
 	//! All scope is derived from the use of this function for a one-location update
 	//? Overwrite this function "{Root}.Manager._scope = () => ..." to change
