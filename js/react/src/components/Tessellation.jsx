@@ -26,8 +26,8 @@ class Tessellation extends SmartComponent {
 
                 <div className="container">
                     <div className="row mb-3">
-                        <input className="cell mr-2" type="number" name="image-height" value={ this.SafeState("FileSysten.image-height") || 0 } readOnly data-role="input" data-prepend="H" />
-                        <input className="cell" type="number" name="image-width" value={ this.SafeState("FileSysten.image-width") || 0 } readOnly data-role="input" data-prepend="W" />
+                        <input className="cell mr-2" type="number" name="image-height" value={ this.SafeState("FileSystem.image-height") || 0 } readOnly data-role="input" data-prepend="H" />
+                        <input className="cell" type="number" name="image-width" value={ this.SafeState("FileSystem.image-width") || 0 } readOnly data-role="input" data-prepend="W" />
                     </div>
 
                     <div className="row mb-3">

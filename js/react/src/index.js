@@ -90,8 +90,8 @@ Animus.Managers.EventManager.GetInstance().AddReducers([
 				return {
 					...state,
 					file: message.data.file,
-					"image-width": message.data.width,
-					"image-height": message.data.height
+					"image-width": +message.data.width,
+					"image-height": +message.data.height
 				};
 			}
 
@@ -99,8 +99,8 @@ Animus.Managers.EventManager.GetInstance().AddReducers([
 		},
 		{
 			"file": null,
-			"image-width": 0,
-			"image-height": 0
+			"image-width": "0",
+			"image-height": "0"
 		}
 	]
 ]);
