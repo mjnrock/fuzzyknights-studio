@@ -41,7 +41,11 @@ class EventManager extends Manager {
     }
     GetReducer(key) {
         return this._reducers[ key ];
-    }
+	}
+	
+	GetModulatedEnumValue(_enum, key) {
+		return `${ _enum }:${ this.GetEnumValue(_enum, key) }`;
+	}
 
     SetEnum(_enum, obj) {
         let enums = {

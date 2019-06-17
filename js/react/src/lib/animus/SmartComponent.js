@@ -80,7 +80,7 @@ class SmartComponent extends Component {
 				let path = _enum.split(".");
 
 				if(path.length === 2) {
-					return this.Manager("events").GetEnumValue(...path);
+					return this.Manager("events").GetModulatedEnumValue(...path);
 				}
 
 				return this.Manager("events").GetEnum(path[0] || _enum);
@@ -88,7 +88,7 @@ class SmartComponent extends Component {
 
 			return this.Manager("events").GetEnum(_enum);
 		} else if(arguments.length === 2) {
-			return this.Manager("events").GetEnumValue(_enum, key);
+			return this.Manager("events").GetModulatedEnumValue(_enum, key);
 		}
 	}
     Action(key, value) {

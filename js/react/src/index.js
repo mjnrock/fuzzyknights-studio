@@ -6,9 +6,9 @@ import App from "./App";
 import Animus from "./lib/animus/package";
 Animus.Managers.Init();
 
-console.log(Animus);
+const EVENT_MANAGER = Animus.Managers.EventManager.GetInstance();
 
-Animus.Managers.EventManager.GetInstance().AddEnums([
+EVENT_MANAGER.AddEnums([
     [ "Tessellation", {
 		UPDATE_ATTRIBUTE: "UPDATE_ATTRIBUTE"
 	}],
@@ -17,17 +17,15 @@ Animus.Managers.EventManager.GetInstance().AddEnums([
 	}]
 ]);
 
-//!	Make the SmartComponent.Enum() add the _enum in front, so that calls are modulated
-
-Animus.Managers.EventManager.GetInstance().AddActions([
-    [ Animus.Managers.EventManager.GetInstance().GetEnumValue("Tessellation", "UPDATE_ATTRIBUTE"), (type, key, value) => ({
+EVENT_MANAGER.AddActions([
+    [ EVENT_MANAGER.GetModulatedEnumValue("Tessellation", "UPDATE_ATTRIBUTE"), (type, key, value) => ({
         type,
         data: {
 			key,
 			value
 		}
     }) ],
-    [ Animus.Managers.EventManager.GetInstance().GetEnumValue("FileSystem", "LOAD_FILE"), (type, file, width, height) => ({
+    [ EVENT_MANAGER.GetModulatedEnumValue("FileSystem", "LOAD_FILE"), (type, file, width, height) => ({
         type,
         data: {
 			file,
@@ -36,11 +34,11 @@ Animus.Managers.EventManager.GetInstance().AddActions([
 		}
     }) ]
 ]);
-Animus.Managers.EventManager.GetInstance().AddReducers([
+EVENT_MANAGER.AddReducers([
 	[
 		"Tessellation",
 		(state = {}, message, [ enums, actions, gs ]) => {
-			if(message.type === enums.Tessellation.UPDATE_ATTRIBUTE) {
+			if(message.type === EVENT_MANAGER.GetModulatedEnumValue("Tessellation", "UPDATE_ATTRIBUTE")) {
 				let th = +gs["Tessellation"]["tile-height"],
 					tw = +gs["Tessellation"]["tile-width"],
 					tx = +gs["Tessellation"]["tile-offset-x"],
@@ -57,8 +55,10 @@ Animus.Managers.EventManager.GetInstance().AddReducers([
 					ctx.clearRect(0, 0, canvas.width, canvas.height);
 					ctx.drawImage(img, 0, 0);
 			
-					for(let i = 0; i < Math.ceil(w / tw); i++) {
-						for(let j = 0; j < Math.ceil(h / th); j++) {
+					//	This has some serious edge-case issues, but can normally be accounted for by +/- 1 on the attribute input box
+					//	Still, it should probably be refactored because it's annoying
+					for(let i = 0; i <= Math.ceil(w / tw); i++) {
+						for(let j = 0; j <= Math.ceil(h / th); j++) {
 							ctx.strokeRect((i * tw) + tx, (j * th) + ty, tw, th);
 						}
 					}
@@ -86,7 +86,7 @@ Animus.Managers.EventManager.GetInstance().AddReducers([
 	[
 		"FileSystem",
 		(state = {}, message, [ enums, actions ]) => {
-			if(message.type === enums.FileSystem.LOAD_FILE) {
+			if(message.type === EVENT_MANAGER.GetModulatedEnumValue("FileSystem", "LOAD_FILE")) {
 				return {
 					...state,
 					file: message.data.file,
@@ -104,8 +104,7 @@ Animus.Managers.EventManager.GetInstance().AddReducers([
 		}
 	]
 ]);
-// Animus.Managers.EventManager.GetInstance().Dispatch("test-1", 1231648948656165);
-Animus.Managers.EventManager.GetInstance().AsyncDispatch();
+EVENT_MANAGER.AsyncDispatch();
 
 ReactDOM.render(
     <App />,

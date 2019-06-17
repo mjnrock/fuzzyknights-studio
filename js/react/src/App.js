@@ -1,11 +1,10 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
 
-import { setState, WatcherComponent } from "./lib/FKS";
-
 import Routes from "./routes/package";
+import SmartComponent from "./lib/animus/SmartComponent";
 
-class App extends WatcherComponent {
+class App extends SmartComponent {
     render() {
         return (        
             <BrowserRouter>
