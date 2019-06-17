@@ -11,6 +11,7 @@ class App extends SmartComponent {
                 <div>
                     <Route exact path="/" component={() => "Ciao ciao! ^_^"} />
                     <Route path="/test" component={ Routes.SpriteUpload } />
+                    <Route path="/mixer" component={ Routes.Mixer } />
                 </div>
             </BrowserRouter>
         );

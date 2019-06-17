@@ -4,7 +4,9 @@ import ReactDOM from "react-dom";
 import App from "./App";
 
 import Animus from "./lib/animus/package";
-Animus.Managers.Init();
+Animus.Managers.Init({
+	wsURL: `ws://localhost:3075/ws`
+});
 
 const EVENT_MANAGER = Animus.Managers.EventManager.GetInstance();
 

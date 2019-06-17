@@ -2,12 +2,18 @@ import Manager from "./Manager";
 import StateManager from "./StateManager";
 import RegistryManager from "./RegistryManager";
 import EventManager from "./EventManager";
+import WebSocketManager from "./WebSocketManager";
 
-export function Init() {
+export function Init({ wsURL = null } = {}) {
 	try {
 		new StateManager();
 		new RegistryManager();
 		new EventManager();
+		new WebSocketManager();
+
+		if(wsURL !== null && wsURL !== void 0) {
+			WebSocketManager.GetInstance().Create(wsURL);
+		}
 
 		StateManager.AddHook("Animus:StateManager:SetState", () => {
 			RegistryManager.GetInstance().UpdateEach();
@@ -40,7 +46,8 @@ export default {
 	Manager,
 	StateManager,
     RegistryManager,
-    EventManager
+	EventManager,
+	WebSocketManager
 };
 
 Object.equals = function( x, y ) {
