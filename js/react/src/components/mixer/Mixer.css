@@ -21,6 +21,8 @@
 	margin-right: 4px;
 	border-right: 4px solid #000;
 	height: 100%;
+	width: 256px;
+	flex: flex;
 }
 
 .track {

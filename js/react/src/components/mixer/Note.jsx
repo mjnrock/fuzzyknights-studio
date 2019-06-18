@@ -49,7 +49,7 @@ class Note extends SmartComponent {
 				onContextMenu={ (e) => e.preventDefault() }
 				onMouseUp={ (e) => this.OnMouseUp(e) }
 			>
-				{ this.state.note * BASE_WIDTH  }
+				{/* { this.state.note * BASE_WIDTH  } */}
 			</div>
 		);
 	}
