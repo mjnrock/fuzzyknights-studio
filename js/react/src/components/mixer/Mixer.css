@@ -14,15 +14,7 @@
 	border-right: 1px solid #000;
 	border-left: 1px solid #000;
 	margin-right: 4px;
-	height: 80%;
-}
-
-.measure {
-	margin-right: 4px;
-	border-right: 4px solid #000;
-	height: 100%;
-	width: 256px;
-	flex: flex;
+	height: 64px;
 }
 
 .track {
@@ -37,6 +29,7 @@
 }
 .track-title {
 	width: 32px;
+	font-size: 10pt;
 }
 
 

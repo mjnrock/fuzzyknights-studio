@@ -7,10 +7,7 @@ class Mixer extends SmartComponent {
 	render() {
 		return (
 			<div className="container">
-				<MixerPack.Track title="Body" />
-				<MixerPack.Track title="Head" />
-				<MixerPack.Track title="Left" />
-				<MixerPack.Track title="Right" />
+				<MixerPack.Sequence />
 			</div>
 		);
 	}
