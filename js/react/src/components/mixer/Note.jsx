@@ -19,7 +19,7 @@ class Note extends SmartComponent {
 		super(props);
 
 		this.state = {
-			note: EnumNote.WHOLE
+			note: EnumNote.QUARTER
 		};
 	}
 

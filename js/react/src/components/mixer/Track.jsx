@@ -13,7 +13,10 @@ class Track extends SmartComponent {
 	}
 	render() {
 		return (
-			<div className="d-flex flex-row">
+			<div
+				className="d-flex flex-row"
+				onContextMenu={ (e) => e.preventDefault() }
+			>
 				<h3 className="track-title rotate">{ this.state.title }</h3>
 				<div className="track d-flex flex-row">
 					<Measure />
