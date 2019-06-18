@@ -4,7 +4,7 @@ import RegistryManager from "./RegistryManager";
 import EventManager from "./EventManager";
 import WebSocketManager from "./WebSocketManager";
 
-export function Init({ wsURL = null } = {}) {
+export function Init({ wsURL = null, packages = [] } = {}) {
 	try {
 		new StateManager();
 		new RegistryManager();
@@ -33,6 +33,10 @@ export function Init({ wsURL = null } = {}) {
 		EventManager.AddHook("Animus:EventManager:Dispatch", () => {
 			StateManager.GetInstance().Sync();
 		});
+
+		if(packages && packages.length > 0) {
+			packages.forEach(loader => loader());
+		}
 	
 		return true;
 	} catch(e) {
